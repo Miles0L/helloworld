@@ -1,2 +1,4 @@
-# helloworld
-my first trial
+'''
+learn python
+code explanation
+'''
