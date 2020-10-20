@@ -10,20 +10,27 @@ class Scene(object):
 		exit(1) #
 
 class Engine(object):
-
+# 接受一个Map类实例作为参数
 	def __init__(self, scene_map):
 		self.scene_map = scene_map
-
+		# 实例自身属性self.scene.map是一个Map类实例
 	def play(self):
-		current_scene = self.scene_map.opening_scene() #
+		current_scene = self.scene_map.opening_scene() 
+		# 调用Map类实例的方法，返回初始场景的实例
 		last_scene = self.scene_map.next_scene('finished')
-
+		# 调用Map类实例的方法，返回最后场景的Finished(Scene)实例
 		while current_scene != last_scene:
+			# while循环保证可以变换场景到最后一个
 			next_scene_name = current_scene.enter()
+			# 调用Scene子类实例的enter方法，开始对话场景，返回下一个场景名
+			# Scene子类实例的enter()均会返回在Map.scenes字典中对应的一个键名，除Death(Scene)
 			current_scene = self.scene_map.next_scene(next_scene_name)
+			# 调用Map类实例的方法，返回下一个场景的Scene子类实例
+			# 准备下一次循环进入下一个场景
 
 		# be sure to print out the last scene
 		current_scene.enter()
+		# 进入最后一个场景
 
 class Death(Scene):
 
@@ -112,7 +119,8 @@ class LaserWeaponArmory(Scene):
 			code is 3 digits.
 			"""))
 
-		code = f"{randint(1,9)}{randint(1,9)}{randint(1,9)}" # 
+		code = f"{randint(1,9)}{randint(1,9)}{randint(1,9)}" 
+		# 
 		guess = input("[keypad]> ")
 		guesses = 0
 
@@ -225,7 +233,7 @@ class Finished(Scene):
 
 
 class Map(object):
-
+# 创建实例时传入字符串，作为slef.start_scene
 	scenes = {
 		'central_corridor': CentralCorridor(),
 		'laser_weapon_armory': LaserWeaponArmory(),
@@ -239,13 +247,21 @@ class Map(object):
 		self.start_scene = start_scene
 
 	def next_scene(self, scene_name):
+		# 在Engine类实例中被调用，被用于获取下一个场景Scene类实例
+		# 接受下一个场景在Map.scenes字典上的键名
 		val = Map.scenes.get(scene_name)
-		return val
+		# 翻字典
+		return val 
+		# 返回下一个场景的Scene类实例
 
 	def opening_scene(self):
 		return self.next_scene(self.start_scene)
+		# 调用self.next_scene()，将初始场景传入
+		# 返回初始场景的Scene子类实例再返回给调用者
 
 
 a_map = Map('central_corridor')
+# 将初始场景设为'central_corridor'
 a_game = Engine(a_map)
+
 a_game.play()
